@@ -1,7 +1,7 @@
 ### Ball Game Player Guide
 
 **Game Controls:**  
-Use the mouse (or arrow keys) to move the paddle at the bottom.
+Use the mouse to move the paddle at the bottom.
 
 **Objective:**  
 Move the paddle to bounce the ball and prevent it from falling to the bottom of the screen.

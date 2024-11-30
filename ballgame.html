@@ -77,13 +77,17 @@
 
         let score = 0;
         let lives = 3;
-        let ballSpeedX = (Math.random() * 4 - 2); // 随机的水平速度
-        let ballSpeedY = 2;
+        let ballSpeedX = (Math.random() * 2 - 1) * 4; // 随机的水平速度
+        let ballSpeedY = 4;
         let ballX = 190;
         let ballY = 190;
         let paddleX = 160;
         let gameInterval;
         let isPaused = false;
+
+        // 保存上次的球速
+        let lastSpeedX = ballSpeedX;
+        let lastSpeedY = ballSpeedY;
 
         // 鼠标移动挡板
         function movePaddle(event) {
@@ -107,22 +111,29 @@
             // 碰撞检测：边界
             if (ballX <= 0 || ballX >= 380) {
                 ballSpeedX = -ballSpeedX;
+                // 随机调整水平速度，但保持速度大致稳定
+                ballSpeedX += (Math.random() * 2 - 1);  // 稍微随机变化水平速度
+                ballSpeedX = Math.max(-4, Math.min(4, ballSpeedX)); // 确保水平速度在[-4, 4]之间
             }
             if (ballY <= 0) {
                 ballSpeedY = -ballSpeedY;
+                // 稍微随机变化垂直速度
+                ballSpeedY += (Math.random() * 2 - 1);  // 稍微随机变化垂直速度
+                ballSpeedY = Math.max(-6, Math.min(6, ballSpeedY)); // 确保垂直速度在[-6, 6]之间
             }
 
             // 碰撞检测：挡板
             if (ballY >= 370 && ballX >= paddleX && ballX <= paddleX + 80) {
                 if (ballSpeedY > 0) { // 只有球向下运动时才有效
                     ballSpeedY = -ballSpeedY;
-                    ballSpeedX += (Math.random() - 0.5) * 2; // 随机改变水平速度
+                    ballSpeedX += (Math.random() * 2 - 1);  // 随机调整水平速度
+                    ballSpeedY += (Math.random() * 2 - 1);  // 随机调整垂直速度
                     score++;
                     scoreDisplay.textContent = '得分: ' + score;
 
-                    if (score % 5 === 0) {
-                        ballSpeedX *= 1.2;
-                        ballSpeedY *= 1.2;
+                    if (score % 1 === 0) {
+                        ballSpeedX += 0.5;
+                        ballSpeedY += 0.5;
                     }
                 }
             }
@@ -147,12 +158,18 @@
             restartBtn.style.display = 'block';
         }
 
-        // 重置球的位置
+        // 重置球的位置，保持球的速度
         function resetBall() {
             ballX = 190;
             ballY = 190;
-            ballSpeedX = (Math.random() * 4 - 2); // 重新随机水平速度
-            ballSpeedY = 2;
+            // 只有在游戏未结束时才保存球的速度
+            if (!isGameOver) {
+                lastSpeedX = ballSpeedX;
+                lastSpeedY = ballSpeedY;
+            }
+            // 使用保存的速度
+            ballSpeedX = lastSpeedX;
+            ballSpeedY = lastSpeedY;
         }
 
         // 暂停游戏
@@ -185,6 +202,15 @@
             startBtn.style.display = 'none'; // 隐藏开始按钮
             gameInterval = setInterval(updateBall, 10); // 启动游戏
         }
+
+        // 游戏开始时保存初始速度
+        function saveSpeed() {
+            lastSpeedX = ballSpeedX;
+            lastSpeedY = ballSpeedY;
+        }
+
+        // 保存初始速度
+        saveSpeed();
 
         // 监听鼠标移动事件
         gameArea.addEventListener('mousemove', movePaddle);

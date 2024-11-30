@@ -10,6 +10,7 @@
             height: 400px;
             border: 2px solid black;
             margin: 0 auto;
+            background-color: #f0f0f0;
         }
         #paddle {
             position: absolute;
@@ -28,13 +29,22 @@
             top: 190px;
             left: 190px;
         }
-        #score {
+        #score, #lives, #gameOver {
             text-align: center;
             font-size: 20px;
         }
-        #lives {
-            text-align: center;
-            font-size: 20px;
+        #gameOver {
+            display: none;
+            color: red;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        button {
+            display: block;
+            margin: 10px auto;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
         }
     </style>
 </head>
@@ -45,12 +55,19 @@
     </div>
     <div id="score">得分: 0</div>
     <div id="lives">生命值: 3</div>
+    <div id="gameOver">游戏结束</div>
+    <button id="restartBtn" style="display:none;">重新开始</button>
+    <button id="pauseBtn">暂停</button>
     <script>
         let gameArea = document.getElementById('gameArea');
         let paddle = document.getElementById('paddle');
         let ball = document.getElementById('ball');
         let scoreDisplay = document.getElementById('score');
         let livesDisplay = document.getElementById('lives');
+        let gameOverDisplay = document.getElementById('gameOver');
+        let restartBtn = document.getElementById('restartBtn');
+        let pauseBtn = document.getElementById('pauseBtn');
+
         let score = 0;
         let lives = 3;
         let ballSpeedX = (Math.random() * 4 - 2); // 随机的水平速度
@@ -58,7 +75,9 @@
         let ballX = 190;
         let ballY = 190;
         let paddleX = 160;
-    
+        let gameInterval;
+        let isPaused = false;
+        
         // 鼠标移动挡板
         function movePaddle(event) {
             let rect = gameArea.getBoundingClientRect();
@@ -70,51 +89,106 @@
             }
             paddle.style.left = paddleX + 'px';
         }
-    
+        
+        // 播放碰撞音效
+        function playSound() {
+            let audio = new Audio('https://www.soundjay.com/button/beep-07.wav');
+            audio.play();
+        }
+
+        // 更新球的状态
         function updateBall() {
             ballX += ballSpeedX;
             ballY += ballSpeedY;
             ball.style.left = ballX + 'px';
             ball.style.top = ballY + 'px';
-    
+
             // 碰撞检测：边界
             if (ballX <= 0 || ballX >= 380) {
                 ballSpeedX = -ballSpeedX;
+                playSound();
             }
             if (ballY <= 0) {
                 ballSpeedY = -ballSpeedY;
+                playSound();
             }
-    
+
             // 碰撞检测：挡板
             if (ballY >= 370 && ballX >= paddleX && ballX <= paddleX + 80) {
                 ballSpeedY = -ballSpeedY;
+                ballSpeedX += (Math.random() - 0.5) * 2; // 随机改变水平速度
                 score++;
                 scoreDisplay.textContent = '得分: ' + score;
+                playSound();
+
                 if (score % 5 === 0) {
                     ballSpeedX *= 1.2;
                     ballSpeedY *= 1.2;
                 }
             }
-    
+
             // 碰撞检测：底部
             if (ballY >= 400) {
                 lives--;
                 livesDisplay.textContent = '生命值: ' + lives;
                 if (lives === 0) {
-                    alert('游戏结束，得分: ' + score);
-                    clearInterval(ballInterval);
+                    gameOver();
                 } else {
-                    ballX = 190;
-                    ballY = 190;
-                    ballSpeedX = (Math.random() * 4 - 2); // 重新随机水平速度
-                    ballSpeedY = 2;
+                    resetBall();
                 }
             }
         }
-    
+
+        // 游戏结束
+        function gameOver() {
+            clearInterval(gameInterval);
+            gameOverDisplay.style.display = 'block';
+            restartBtn.style.display = 'block';
+        }
+
+        // 重置球的位置
+        function resetBall() {
+            ballX = 190;
+            ballY = 190;
+            ballSpeedX = (Math.random() * 4 - 2); // 重新随机水平速度
+            ballSpeedY = 2;
+        }
+
+        // 暂停游戏
+        function togglePause() {
+            if (isPaused) {
+                gameInterval = setInterval(updateBall, 10);
+                pauseBtn.textContent = '暂停';
+            } else {
+                clearInterval(gameInterval);
+                pauseBtn.textContent = '继续';
+            }
+            isPaused = !isPaused;
+        }
+
+        // 重新开始游戏
+        function restartGame() {
+            score = 0;
+            lives = 3;
+            scoreDisplay.textContent = '得分: ' + score;
+            livesDisplay.textContent = '生命值: ' + lives;
+            gameOverDisplay.style.display = 'none';
+            restartBtn.style.display = 'none';
+            resetBall();
+            gameInterval = setInterval(updateBall, 10);
+        }
+
         // 监听鼠标移动事件
         gameArea.addEventListener('mousemove', movePaddle);
-        let ballInterval = setInterval(updateBall, 10);
+
+        // 游戏初始化
+        gameInterval = setInterval(updateBall, 10);
+
+        // 暂停按钮事件
+        pauseBtn.addEventListener('click', togglePause);
+
+        // 重新开始按钮事件
+        restartBtn.addEventListener('click', restartGame);
     </script>    
 </body>
 </html>

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>弹球小游戏</title>
+    <style>
+        #gameArea {
+            position: relative;
+            width: 400px;
+            height: 400px;
+            border: 2px solid black;
+            margin: 0 auto;
+        }
+        #paddle {
+            position: absolute;
+            width: 80px;
+            height: 10px;
+            background-color: red;
+            bottom: 0;
+            left: 160px;
+        }
+        #ball {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background-color: blue;
+            border-radius: 50%;
+            top: 190px;
+            left: 190px;
+        }
+        #score {
+            text-align: center;
+            font-size: 20px;
+        }
+        #lives {
+            text-align: center;
+            font-size: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div id="gameArea">
+        <div id="paddle"></div>
+        <div id="ball"></div>
+    </div>
+    <div id="score">得分: 0</div>
+    <div id="lives">生命值: 3</div>
+    <script>
+        let gameArea = document.getElementById('gameArea');
+        let paddle = document.getElementById('paddle');
+        let ball = document.getElementById('ball');
+        let scoreDisplay = document.getElementById('score');
+        let livesDisplay = document.getElementById('lives');
+        let score = 0;
+        let lives = 3;
+        let ballSpeedX = (Math.random() * 4 - 2); // 随机的水平速度
+        let ballSpeedY = 2;
+        let ballX = 190;
+        let ballY = 190;
+        let paddleX = 160;
+    
+        // 鼠标移动挡板
+        function movePaddle(event) {
+            let rect = gameArea.getBoundingClientRect();
+            paddleX = event.clientX - rect.left - paddle.offsetWidth / 2;
+            if (paddleX < 0) {
+                paddleX = 0;
+            } else if (paddleX > gameArea.offsetWidth - paddle.offsetWidth) {
+                paddleX = gameArea.offsetWidth - paddle.offsetWidth;
+            }
+            paddle.style.left = paddleX + 'px';
+        }
+    
+        function updateBall() {
+            ballX += ballSpeedX;
+            ballY += ballSpeedY;
+            ball.style.left = ballX + 'px';
+            ball.style.top = ballY + 'px';
+    
+            // 碰撞检测：边界
+            if (ballX <= 0 || ballX >= 380) {
+                ballSpeedX = -ballSpeedX;
+            }
+            if (ballY <= 0) {
+                ballSpeedY = -ballSpeedY;
+            }
+    
+            // 碰撞检测：挡板
+            if (ballY >= 370 && ballX >= paddleX && ballX <= paddleX + 80) {
+                ballSpeedY = -ballSpeedY;
+                score++;
+                scoreDisplay.textContent = '得分: ' + score;
+                if (score % 5 === 0) {
+                    ballSpeedX *= 1.2;
+                    ballSpeedY *= 1.2;
+                }
+            }
+    
+            // 碰撞检测：底部
+            if (ballY >= 400) {
+                lives--;
+                livesDisplay.textContent = '生命值: ' + lives;
+                if (lives === 0) {
+                    alert('游戏结束，得分: ' + score);
+                    clearInterval(ballInterval);
+                } else {
+                    ballX = 190;
+                    ballY = 190;
+                    ballSpeedX = (Math.random() * 4 - 2); // 重新随机水平速度
+                    ballSpeedY = 2;
+                }
+            }
+        }
+    
+        // 监听鼠标移动事件
+        gameArea.addEventListener('mousemove', movePaddle);
+        let ballInterval = setInterval(updateBall, 10);
+    </script>    
+</body>
+</html>

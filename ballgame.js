@@ -11,17 +11,14 @@ let startBtn = document.getElementById('startBtn');
 
         let score = 0;
         let lives = 3;
-        let ballSpeedX = (Math.random() * 2 - 1) * 4; // 随机的水平速度
+        let ballSpeedXValues = [2, 3, 4, 5, -2, -3, -4, -5];
+        let ballSpeedX = ballSpeedXValues[Math.floor(Math.random() * ballSpeedXValues.length)];
         let ballSpeedY = 4;
         let ballX = 200;
         let ballY = 0;
         let paddleX = 160;
         let gameInterval;
         let isPaused = false;
-
-        // 保存初始球速
-        let initialSpeedX = ballSpeedX;
-        let initialSpeedY = ballSpeedY;
 
         // 鼠标移动挡板
         function movePaddle(event) {
@@ -116,8 +113,8 @@ let startBtn = document.getElementById('startBtn');
         function restartGame() {
             score = 0;
             lives = 3;
-            ballSpeedX = initialSpeedX;
-            ballSpeedY = initialSpeedY;
+            ballSpeedX = ballSpeedXValues[Math.floor(Math.random() * ballSpeedXValues.length)];
+            ballSpeedY = 4;
             scoreDisplay.textContent = '得分: ' + score;
             livesDisplay.textContent = '生命值: ' + lives;
             gameOverDisplay.style.display = 'none';

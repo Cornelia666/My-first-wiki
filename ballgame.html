@@ -51,7 +51,7 @@
 </head>
 <body>
     <!-- 开始游戏按钮 -->
-    <button id="startBtn">开始游戏</button>
+    <button id="startBtn" style="display: block; margin: 0 auto;">开始游戏</button>
 
     <div id="gameArea">
         <div id="paddle"></div>
@@ -62,7 +62,7 @@
     <div id="lives">生命值: 3</div>
     <div id="gameOver">游戏结束</div>
     <button id="restartBtn" style="display:none;">重新开始</button>
-    <button id="pauseBtn">暂停</button>
+    <button id="pauseBtn" style="display: none;">暂停</button>
 
     <script>
         let startBtn = document.getElementById('startBtn');
@@ -79,8 +79,8 @@
         let lives = 3;
         let ballSpeedX = (Math.random() * 2 - 1) * 4; // 随机的水平速度
         let ballSpeedY = 4;
-        let ballX = 190;
-        let ballY = 190;
+        let ballX = 200;
+        let ballY = 0;
         let paddleX = 160;
         let gameInterval;
         let isPaused = false;
@@ -124,7 +124,7 @@
                     score++;
                     scoreDisplay.textContent = '得分: ' + score;
 
-                    if (score % 5 === 0) { // 每5分球速增加
+                    if (score % 3 === 0) { // 每3分球速增加
                         ballSpeedX *= 1.1;
                         ballSpeedY *= 1.1;
                     }
@@ -142,6 +142,15 @@
                     resetBall();
                 }
             }
+
+            // 设置球速上限
+            const maxSpeed = 10; // 设置球速上限为10
+            if (Math.abs(ballSpeedX) > maxSpeed) {
+                ballSpeedX = Math.sign(ballSpeedX) * maxSpeed;
+            }
+            if (Math.abs(ballSpeedY) > maxSpeed) {
+                ballSpeedY = Math.sign(ballSpeedY) * maxSpeed;
+            }
         }
 
         // 游戏结束
@@ -151,12 +160,10 @@
             restartBtn.style.display = 'block';
         }
 
-        // 重置球的位置，保持球的速度
+        // 重置球的位置
         function resetBall() {
-            ballX = 190;
-            ballY = 190;
-            ballSpeedX = initialSpeedX;
-            ballSpeedY = initialSpeedY;
+            ballX = 200;
+            ballY = 0;
         }
 
         // 暂停游戏
@@ -175,6 +182,8 @@
         function restartGame() {
             score = 0;
             lives = 3;
+            ballSpeedX = initialSpeedX;
+            ballSpeedY = initialSpeedY;
             scoreDisplay.textContent = '得分: ' + score;
             livesDisplay.textContent = '生命值: ' + lives;
             gameOverDisplay.style.display = 'none';
@@ -187,6 +196,7 @@
         function startGame() {
             gameArea.style.display = 'block'; // 显示游戏区域
             startBtn.style.display = 'none'; // 隐藏开始按钮
+            pauseBtn.style.display = 'block'; // 显示暂停按钮
             gameInterval = setInterval(updateBall, 10); // 启动游戏
         }
 

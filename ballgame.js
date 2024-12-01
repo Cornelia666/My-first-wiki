@@ -89,6 +89,7 @@ let startBtn = document.getElementById('startBtn');
             clearInterval(gameInterval);
             gameOverDisplay.style.display = 'block';
             restartBtn.style.display = 'block';
+            pauseBtn.style.display = 'none'; // 隐藏暂停按钮
         }
 
         // 重置球的位置
@@ -121,6 +122,7 @@ let startBtn = document.getElementById('startBtn');
             restartBtn.style.display = 'none';
             resetBall();
             gameInterval = setInterval(updateBall, 10);
+            pauseBtn.style.display = 'block'; // 显示暂停按钮
         }
 
         // 开始游戏

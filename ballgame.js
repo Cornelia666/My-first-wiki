@@ -11,8 +11,7 @@ let startBtn = document.getElementById('startBtn');
 
         let score = 0;
         let lives = 3;
-        let ballSpeedXValues = [2, 3, 4, 5, -2, -3, -4, -5];
-        let ballSpeedX = ballSpeedXValues[Math.floor(Math.random() * ballSpeedXValues.length)];
+        let ballSpeedX = (Math.random() > 0.5 ? 1 : -1) * (Math.random() * 3 + 2.1);
         let ballSpeedY = 4;
         let ballX = 200;
         let ballY = 0;
@@ -114,7 +113,7 @@ let startBtn = document.getElementById('startBtn');
         function restartGame() {
             score = 0;
             lives = 3;
-            ballSpeedX = ballSpeedXValues[Math.floor(Math.random() * ballSpeedXValues.length)];
+            ballSpeedX = (Math.random() > 0.5 ? 1 : -1) * (Math.random() * 3 + 2.1);
             ballSpeedY = 4;
             scoreDisplay.textContent = '得分: ' + score;
             livesDisplay.textContent = '生命值: ' + lives;

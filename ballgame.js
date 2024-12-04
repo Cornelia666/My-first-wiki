@@ -20,6 +20,15 @@ let ballY = 0;
 let paddleX = 160;
 let gameInterval;
 let isPaused = false;
+let score = 0;
+let lives = 3;
+let ballSpeedX = (Math.random() > 0.5 ? 1 : -1) * (Math.random() * 3 + 2.1);
+let ballSpeedY = 4;
+let ballX = 200;
+let ballY = 0;
+let paddleX = 160;
+let gameInterval;
+let isPaused = false;
 
 // 鼠标移动挡板
 function movePaddle(event) {

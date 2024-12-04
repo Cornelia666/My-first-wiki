@@ -1,126 +1,139 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
-<head>
-    <meta charset="UTF-8">
+  <head>
+    <meta charset="UTF-8" />
     <title>ballgame</title>
     <style>
-        body {
-            background-color: #F0F8FF;
-            font-family: 'Arial', sans-serif;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            height: 100vh;
-        }
-        header {
-            text-align: center;
-            font-size: 28px;
-            font-weight: bold;
-            padding: 20px 0;
-            background-color: #4682B4;
-            color: white;
-        }
-        header p {
-            font-size: 18px;
-            margin: 10px 0;
-        }
-        footer {
-            text-align: center;
-            font-size: 16px;
-            padding: 15px;
-            background-color: #4682B4;
-            color: white;
-        }
-        #gameArea {
-            position: relative;
-            width: 80%;
-            max-width: 400px;
-            aspect-ratio: 1 / 1;
-            height: 400px;
-            border: 2px solid black;
-            margin: 0 auto;
-            background-color: #D3D3D3;
-            display: none; /* 初始隐藏游戏区域 */
-        }
-        #paddle {
-            position: absolute;
-            width: 80px;
-            height: 10px;
-            background-color: red;
-            bottom: 0;
-            left: 40%;
-        }
-        #ball {
-            position: absolute;
-            width: 20px;
-            height: 20px;
-            background-color: blue;
-            border-radius: 50%;
-            top: 190px;
-            left: 190px;
-        }
-        #score, #lives, #gameOver {
-            text-align: center;
-            font-size: 20px;
-        }
-        #gameOver {
-            display: none;
-            color: red;
-            font-size: 24px;
-            font-weight: bold;
-        }
-        button {
-            display: block;
-            margin: 10px auto;
-            padding: 10px 20px;
-            font-size: 16px;
-            cursor: pointer;
-            background-color: #4682B4;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            transition: background-color 0.3s;
-        }
-        button:hover {
-            background-color: #5A9BD5;
-        }
-        #pauseBtn {
-            background-color: #FFA500;
-        }
-        #pauseBtn:hover {
-            background-color: #FF8C00;
-        }
+      body {
+        background-color: #f0f8ff;
+        font-family: "Arial", sans-serif;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        height: 100vh;
+      }
+      header {
+        text-align: center;
+        font-size: 28px;
+        font-weight: bold;
+        padding: 20px 0;
+        background-color: #4682b4;
+        color: white;
+      }
+      header p {
+        font-size: 18px;
+        margin: 10px 0;
+      }
+      footer {
+        text-align: center;
+        font-size: 16px;
+        padding: 15px;
+        background-color: #4682b4;
+        color: white;
+      }
+      #gameArea {
+        position: relative;
+        width: 80%;
+        max-width: 400px;
+        aspect-ratio: 1 / 1;
+        height: 400px;
+        border: 2px solid black;
+        margin: 0 auto;
+        background-color: #d3d3d3;
+        display: none; /* 初始隐藏游戏区域 */
+        overflow: hidden; /* 防止内容溢出 */
+      }
+      #paddle {
+        position: absolute;
+        width: 80px;
+        height: 10px;
+        background-color: red;
+        bottom: 0;
+        left: 40%;
+      }
+      #ball {
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        background-color: blue;
+        border-radius: 50%;
+        top: 190px;
+        left: 190px;
+      }
+      #score,
+      #lives,
+      #gameOver {
+        text-align: center;
+        font-size: 20px;
+      }
+      #gameOver {
+        display: none;
+        color: red;
+        font-size: 24px;
+        font-weight: bold;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        opacity: 0;
+        transition: opacity 1s; /* 过渡时间为1秒 */
+      }
+      button {
+        display: block;
+        margin: 10px auto;
+        padding: 10px 20px;
+        font-size: 16px;
+        cursor: pointer;
+        background-color: #4682b4;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        transition: background-color 0.3s;
+      }
+      button:hover {
+        background-color: #5a9bd5;
+      }
+      #pauseBtn {
+        background-color: #ffa500;
+      }
+      #pauseBtn:hover {
+        background-color: #ff8c00;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <header>
-        <h1>Ball Game</h1>
-        <p>This is a simple ball game.<br>
-            Use the mouse to move the paddle and bounce the ball, <br>preventing it from falling off the screen.
-        </p>
+      <h1>Ball Game</h1>
+      <p>
+        This is a simple ball game.<br />
+        Use the mouse to move the paddle and bounce the ball, <br />preventing
+        it from falling off the screen.
+      </p>
     </header>
 
     <!-- 开始游戏按钮 -->
-    <button id="startBtn" style="display: block; margin: 0 auto;">开始游戏</button>
+    <button id="startBtn" style="display: block; margin: 0 auto">
+      开始游戏
+    </button>
 
     <div id="gameArea">
-        <div id="paddle"></div>
-        <div id="ball"></div>
+      <div id="paddle"></div>
+      <div id="ball"></div>
     </div>
 
     <div id="score">得分: 0</div>
     <div id="lives">生命值: 3</div>
     <div id="gameOver">游戏结束</div>
-    <button id="restartBtn" style="display:none;">重新开始</button>
-    <button id="pauseBtn" style="display: none;">暂停</button>
+    <button id="restartBtn" style="display: none">重新开始</button>
+    <button id="pauseBtn" style="display: none">暂停</button>
 
-    <script src="ballgame.js"></script>  
+    <script src="ballgame.js"></script>
 
     <footer>
-        <p>&copy; 2024 ballgame</p>
-        <p>Contact email：happycornelia666@gmail.com</p>
+      <p>&copy; 2024 ballgame</p>
+      <p>Contact email：happycornelia666@gmail.com</p>
     </footer>
-</body>
+  </body>
 </html>
